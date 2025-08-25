@@ -8,3 +8,5 @@ torch==2.1.0
 sentencepiece==0.1.99
 tokenizers==0.13.3
 numpy==1.26.0
+selenium==4.15.2
+webdriver-manager==4.0.1
