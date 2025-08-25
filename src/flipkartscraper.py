@@ -28,19 +28,16 @@ def scrape_flipkart_product(driver, product_url, max_pages=3, max_reviews=100):
     driver.get(product_url)
     time.sleep(3)
 
-    # --- Product Name ---
     try:
         data["product_name"] = driver.find_element(By.XPATH, "//span[@class='VU-ZEz']").text.strip()
     except:
         pass
 
-    # --- Price ---
     try:
         data["price"] = driver.find_element(By.XPATH, "//div[@class='Nx9bqj CxhGGd']").text.strip()
     except:
         pass
 
-    # --- Click "All reviews" link if present ---
     try:
         all_reviews_link = driver.find_element(By.XPATH, "//div[@class='_23J90q RcXBOT']/span")
         driver.execute_script("arguments[0].click();", all_reviews_link)
@@ -48,7 +45,6 @@ def scrape_flipkart_product(driver, product_url, max_pages=3, max_reviews=100):
     except:
         pass
 
-    # --- Collect reviews ---
     reviews = []
     page = 1
 
@@ -65,7 +61,6 @@ def scrape_flipkart_product(driver, product_url, max_pages=3, max_reviews=100):
             if len(reviews) < max_reviews:
                 reviews.append(el.text.strip())
 
-        # Next page
         try:
             next_button = driver.find_element(By.XPATH, "//a[@class='_9QVEpD']")
             driver.execute_script("arguments[0].click();", next_button)

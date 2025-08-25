@@ -4,21 +4,17 @@ from src.flipkartscraper import scrape_flipkart_product, init_driver
 from src.preprocess import preprocess_reviews
 from src.sentiment import predict_sentiments
 
-# --- Paths ---
 input_file = "data/flipkartproducts.xlsx"
 output_file = "output/flipkart_products_result.xlsx"
 os.makedirs("output", exist_ok=True)
 
-# --- Load products ---
 df_products = pd.read_excel(input_file)
 if "url" not in df_products.columns:
     raise ValueError("Excel must contain a 'url' column.")
 
-# --- Init driver ---
 driver = init_driver()
 all_data = []
 
-# --- Process each product ---
 for idx, row in df_products.iterrows():
     url = row["url"]
     print(f"Processing product {idx+1}: {url}")
@@ -33,7 +29,6 @@ for idx, row in df_products.iterrows():
         neg = sentiments.count("negative")
         neu = sentiments.count("neutral")
 
-        # --- Improved summary logic ---
         if pos > (neg + neu):
             summary = "Mostly positive feedback, recommended."
         elif neg > (pos + neu):
@@ -54,10 +49,8 @@ for idx, row in df_products.iterrows():
 
     all_data.append(result)
 
-# --- Close driver ---
 driver.quit()
 
-# --- Save output ---
 df_result = pd.DataFrame(all_data)
 df_result.to_excel(output_file, index=False)
 print(f"✅ Done! Results saved to {output_file}")
