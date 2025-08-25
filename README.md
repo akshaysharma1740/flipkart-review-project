@@ -65,10 +65,9 @@ python app.py
 
 📊 Example Output
 The final Excel file contains:
-1.Product URL
-2.Reviews
-3.Sentiment (Positive / Negative / Neutral)
-4.Summarized Review
+1.Reviews
+2.Sentiment
+3.Summarized Review
 
 📌 Tech Stack
 1.Python 3.10+
