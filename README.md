@@ -21,33 +21,13 @@ Tech Stack
 
 ---
 
-Project Structure
-
-review_sentiment_project/
-│── data/
-│ └── flipkartproducts.xlsx # Input file with product URLs
-│
-│── output/
-│ └── flipkart_products_result.xlsx # Final results with sentiment & summary
-│
-│── src/
-│ ├── flipkartscraper.py # Scrapes product reviews from Flipkart
-│ ├── preprocess.py # Cleans & preprocesses review text
-│ ├── sentiment.py # Predicts sentiment (Positive/Negative/Neutral)
-│
-│── app.py # Main script to run the project
-│── requirements.txt # Python dependencies
-│── README.md # Project documentation
-
----
-
  ⚙️ How It Works
 
 1. **Input**: Add Flipkart product URLs into `data/flipkartproducts.xlsx`.  
 2. **Scraping**: `flipkartscraper.py` fetches all reviews from the given product URLs.  
 3. **Preprocessing**: `preprocess.py` cleans and prepares text data.  
 4. **Sentiment Analysis**: `sentiment.py` analyzes each review → Positive, Negative, or Neutral.  
-5. **Output**: The results (reviews, sentiments, and summaries) are saved into `output/flipkart_products_result.xlsx`.  
+5. **Output**: The results (reviews, sentiments, and summaries) are saved into `output/flipkartsentiment.xlsx`.  
 
 ---
 
@@ -61,7 +41,10 @@ python -m venv venv
 source venv/bin/activate   # For Linux/Mac
 venv\Scripts\activate      # For Windows
 pip install -r requirements.txt
-python app.py
+put flipkartproducts.xlsx in data folder(with products url)
+python src/flipkartscarper.py
+python src/preprocess.py
+python src/sentiment.py
 
 📊 Example Output
 The final Excel file contains:
