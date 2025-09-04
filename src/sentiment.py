@@ -1,23 +1,23 @@
-import spacy
-from spacytextblob.spacytextblob import SpacyTextBlob
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
 import pandas as pd
 import os
 
-nlp = spacy.load("en_core_web_sm")
-nlp.add_pipe("spacytextblob")
+def load_model(model_name="roberta-base"):
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name)
+    return tokenizer, model
 
-def get_review_sentiment_spacy(review):
-    doc = nlp(str(review))
-    polarity = doc._.polarity  
-    if polarity > 0:
-        return 1  
-    elif polarity < 0:
-        return 0  
-    else:
-        return -1  
+def get_review_sentiment_hf(review, tokenizer, model):
+    inputs = tokenizer(str(review), return_tensors="pt", truncation=True, padding=True)
+    with torch.no_grad():
+        outputs = model(**inputs)
+        pred = torch.argmax(outputs.logits, dim=1).item()
+    return pred
 
-def predict_product_sentiments_spacy(input_file="data/processed.csv",
-                                     output_file="output/flipkartsentiment.xlsx"):
+def predict_product_sentiments_hf(input_file="data/processed.csv",
+                                  output_file="output/flipkartsentiment.xlsx",
+                                  model_name="roberta-base"):
 
     if not os.path.exists(input_file):
         raise FileNotFoundError(f"Input file not found: {input_file}")
@@ -27,7 +27,9 @@ def predict_product_sentiments_spacy(input_file="data/processed.csv",
     if not all(col in df.columns for col in ["product_name", "price", "processed_review"]):
         raise ValueError("Input must have 'product_name', 'price', and 'processed_review' columns")
 
-    df["sentiment_score"] = df["processed_review"].apply(get_review_sentiment_spacy)
+    tokenizer, model = load_model(model_name)
+
+    df["sentiment_score"] = df["processed_review"].apply(lambda x: get_review_sentiment_hf(x, tokenizer, model))
 
     product_sentiments = []
     for product, group in df.groupby(["product_name", "price"]):
@@ -56,4 +58,4 @@ def predict_product_sentiments_spacy(input_file="data/processed.csv",
     return result_df
 
 if __name__ == "__main__":
-    predict_product_sentiments_spacy()
+    predict_product_sentiments_hf()

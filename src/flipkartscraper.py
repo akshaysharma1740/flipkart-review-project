@@ -28,19 +28,16 @@ def scrape_flipkart_product(driver, product_url, max_pages=3, max_reviews=100):
     driver.get(product_url)
     time.sleep(3)
 
-    # Get product name
     try:
         data["product_name"] = driver.find_element(By.XPATH, "//span[@class='VU-ZEz']").text.strip()
     except:
         pass
 
-    # Get price
     try:
         data["price"] = driver.find_element(By.XPATH, "//div[@class='Nx9bqj CxhGGd']").text.strip()
     except:
         pass
 
-    # Click "All reviews"
     try:
         all_reviews_link = driver.find_element(By.XPATH, "//div[@class='_23J90q RcXBOT']/span")
         driver.execute_script("arguments[0].click();", all_reviews_link)
@@ -66,7 +63,6 @@ def scrape_flipkart_product(driver, product_url, max_pages=3, max_reviews=100):
             if len(reviews) < max_reviews:
                 reviews.append(el.text.strip())
 
-        # Click next page
         try:
             next_button = driver.find_element(By.XPATH, "//a[@class='_9QVEpD']")
             driver.execute_script("arguments[0].click();", next_button)
@@ -81,11 +77,9 @@ def scrape_flipkart_product(driver, product_url, max_pages=3, max_reviews=100):
     return data
 
 def scrape_all_products(file_path="data/flipkartproducts.xlsx"):
-    # Read product URLs
     df_products = pd.read_excel(file_path)
     urls = df_products["url"].dropna().tolist()
 
-    # Create reviews Excel if not exists
     os.makedirs("data", exist_ok=True)
     reviews_file = os.path.join("data", "reviews.xlsx")
     if not os.path.exists(reviews_file):
@@ -105,7 +99,6 @@ def scrape_all_products(file_path="data/flipkartproducts.xlsx"):
                 "review_text": reviews
             })
 
-            # Append to existing Excel
             if os.path.exists(reviews_file):
                 existing_df = pd.read_excel(reviews_file)
                 df = pd.concat([existing_df, df], ignore_index=True)
