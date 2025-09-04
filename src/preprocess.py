@@ -10,7 +10,7 @@ def clean_text_nlp(text: str) -> str:
     for token in doc:
         if not token.is_stop and not token.is_punct and not token.is_space:
             tokens.append(token.lemma_.lower())
-    return " ".join(tokens)
+    return " ".join(tokens) 
 
 def preprocess_reviews_nlp(input_file="data/reviews.xlsx", output_file="data/processed.csv"):
     if not os.path.exists(input_file):
